@@ -10,7 +10,10 @@ const FormikForm = () => {
 
 
 
+    const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
+
     const validationSchema = Yup.object().shape({
+
         name: Yup.string()
             .min(2, "*Names must have at least 2 characters")
             .max(100, "*Names can't be longer than 100 characters")
@@ -26,11 +29,16 @@ const FormikForm = () => {
         checked: Yup.array().min(1),
         radios: Yup.string().oneOf(["Green", "Red", "Blue"]).required(),
         cars: Yup.string().required("*Car model  is required"),
+        phone: Yup.string().matches(phoneRegExp).required('Phone number is not valid'),
+        zip: Yup.string()
+        .required("*Zip Code is Required")
+        .min(5, 'Must be exactly 5 digits')
+        .max(5, 'Must be exactly 5 digits')
     });
 
     return (
 
-        <Formik initialValues={{ name: "", email: "", address: "", checked: [], radios: '', cars: '' }}
+        <Formik initialValues={{ name: "", email: "", address: "", checked: [], radios: '', cars: '', phone: '', zip:'' }}
             validationSchema={validationSchema}
             onSubmit={(values, { setSubmitting, resetForm }) => {
                 console.log(values)
@@ -74,6 +82,12 @@ const FormikForm = () => {
                                 },
                                 cars: {
                                     'en-US': values.cars
+                                },
+                                phone: {
+                                    'en-US': values.phone
+                                },
+                                zip: {
+                                    'en-US': values.zip
                                 }
 
                             }
@@ -215,7 +229,8 @@ const FormikForm = () => {
                             <div className="error-message">{errors.radios}</div>
                         ) : null}
                     </Form.Group>
-
+                    
+                    <>
                     <Form.Select aria-label="Default select example"
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -230,7 +245,37 @@ const FormikForm = () => {
                     {touched.cars && errors.cars ? (
                         <div className="error-message">{errors.cars}</div>
                     ) : null}
+                    </>
 
+                    <Form.Group className="mb-3" controlId="formPhone">
+                        <Form.Label>Phone</Form.Label>
+                        <Form.Control type="number" placeholder="Enter Phone Number"
+                            name="phone"
+                            onChange={handleChange}
+                            value={values.phone}
+                            onBlur={handleBlur}
+                            className={touched.phone && errors.phone ? "error" : null}
+                        />
+                        {touched.phone && errors.phone ? (
+                            <div className="error-message">{errors.phone}</div>
+                        ) : null}
+
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" controlId="formZip">
+                        <Form.Label>Zip Code</Form.Label>
+                        <Form.Control type="text" placeholder="Enter Zip Code"
+                            name="zip"
+                            onChange={handleChange}
+                            value={values.zip}
+                            onBlur={handleBlur}
+                            className={touched.zip && errors.zip ? "error" : null}
+                        />
+                        {touched.zip && errors.zip ? (
+                            <div className="error-message">{errors.zip}</div>
+                        ) : null}
+
+                    </Form.Group>
 
 
 
