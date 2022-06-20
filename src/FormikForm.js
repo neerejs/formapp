@@ -5,6 +5,7 @@ import * as contentfulManagement from 'contentful-management';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import './FormikForm.css';
+import { Col, Row, Container } from 'react-bootstrap';
 
 const FormikForm = () => {
 
@@ -31,262 +32,271 @@ const FormikForm = () => {
         cars: Yup.string().required("*Car model  is required"),
         phone: Yup.string().matches(phoneRegExp).required('Phone number is not valid'),
         zip: Yup.string()
-        .required("*Zip Code is Required")
-        .min(5, 'Must be exactly 5 digits')
-        .max(5, 'Must be exactly 5 digits')
+            .required("*Zip Code is Required")
+            .min(5, 'Must be exactly 5 digits')
+            .max(5, 'Must be exactly 5 digits')
     });
 
     return (
 
-        <Formik initialValues={{ name: "", email: "", address: "", checked: [], radios: '', cars: '', phone: '', zip:'' }}
-            validationSchema={validationSchema}
-            onSubmit={(values, { setSubmitting, resetForm }) => {
-                console.log(values)
-                setSubmitting(true)
+
+        <>
+            <Container>
+                <Row>
+                    <Col>
+                        <Formik initialValues={{ name: "", email: "", address: "", checked: [], radios: '', cars: '', phone: '', zip: '' }}
+                            validationSchema={validationSchema}
+                            onSubmit={(values, { setSubmitting, resetForm }) => {
+                                console.log(values)
+                                setSubmitting(true)
 
 
 
 
-                setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
+                                setTimeout(() => {
+                                    alert(JSON.stringify(values, null, 2));
 
-                    const client = contentfulManagement.createClient({
-                        accessToken: 'CFPAT-oUCFauW8e8B0z1etnV5Lx0V0eEegb51Dy4d__550f1k'
-                    })
-
-
-                    client.getSpace('nvm4509pk8bp')
-                        .then((space) => space.getEnvironment('master'))
-                        .then((environment) => environment.createEntry('giveaway', {
-                            fields: {
-                                name: {
-                                    'en-US': values.name
-                                },
-                                email: {
-                                    'en-US': values.email
-                                },
-                                address: {
-                                    'en-US': values.cars
-                                },
-                                lastname: {
-                                    'en-US': values.lastname
-                                },
-                                comments: {
-                                    'en-US': values.comments
-                                },
-                                checked: {
-                                    'en-US': values.checked.toString()
-                                },
-                                radios: {
-                                    'en-US': values.radios
-                                },
-                                cars: {
-                                    'en-US': values.cars
-                                },
-                                phone: {
-                                    'en-US': values.phone
-                                },
-                                zip: {
-                                    'en-US': values.zip
-                                }
-
-                            }
-                        }))
-                        .then((entry) => {
-                            console.log(entry)
-                            entry.publish()
-                        })
-                        .catch((error) => {
-
-                        })
+                                    const client = contentfulManagement.createClient({
+                                        accessToken: 'CFPAT-oUCFauW8e8B0z1etnV5Lx0V0eEegb51Dy4d__550f1k'
+                                    })
 
 
-                    resetForm();
+                                    client.getSpace('nvm4509pk8bp')
+                                        .then((space) => space.getEnvironment('master'))
+                                        .then((environment) => environment.createEntry('giveaway', {
+                                            fields: {
+                                                name: {
+                                                    'en-US': values.name
+                                                },
+                                                email: {
+                                                    'en-US': values.email
+                                                },
+                                                address: {
+                                                    'en-US': values.cars
+                                                },
+                                                lastname: {
+                                                    'en-US': values.lastname
+                                                },
+                                                comments: {
+                                                    'en-US': values.comments
+                                                },
+                                                checked: {
+                                                    'en-US': values.checked.toString()
+                                                },
+                                                radios: {
+                                                    'en-US': values.radios
+                                                },
+                                                cars: {
+                                                    'en-US': values.cars
+                                                },
+                                                phone: {
+                                                    'en-US': values.phone
+                                                },
+                                                zip: {
+                                                    'en-US': values.zip
+                                                }
 
-                    setSubmitting(false);
-                }, 500);
+                                            }
+                                        }))
+                                        .then((entry) => {
+                                            console.log(entry)
+                                            entry.publish()
+                                        })
+                                        .catch((error) => {
 
-
-                // setSubmiting(true);
-
-
-
-            }}
-        >
-
-            {({ values, handleChange, handleSubmit, handleBlur, touched, errors, isSubmitting
-            }) => (
-
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="formName">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter Name"
-                            name="name"
-                            onChange={handleChange}
-                            value={values.name}
-                            onBlur={handleBlur}
-                            className={touched.name && errors.name ? "error" : null}
-                        />
-                        {touched.name && errors.name ? (
-                            <div className="error-message">{errors.name}</div>
-                        ) : null}
-
-                    </Form.Group>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Email address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email"
-                            name="email"
-                            onChange={handleChange}
-                            value={values.email}
-                            onBlur={handleBlur}
-                            className={touched.email && errors.email ? "error" : null}
-                        />
-                        {touched.email && errors.email ? (
-                            <div className="error-message">{errors.email}</div>
-                        ) : null}
-                    </Form.Group>
-
-
-                    <Form.Group className="mb-3" controlId="formBasicAddress">
-                        <Form.Label>Address</Form.Label>
-                        <Form.Control type="text" placeholder="Enter Address"
-                            name="address"
-                            onChange={handleChange}
-                            value={values.address}
-                            onBlur={handleBlur}
-                            className={touched.address && errors.address ? "error" : null}
-                        />
-                        {touched.address && errors.address ? (
-                            <div className="error-message">{errors.address}</div>
-                        ) : null}
-                    </Form.Group>
+                                        })
 
 
-                    <div id="checkbox-group">Checked</div>
-                    <Form.Group className="mb-3" controlId="formBasicCheck">
-                        <div class="form-check">
-                            <Field type="checkbox" class="form-check-input" name="checked" value="Yes"
-                                onChange={handleChange}
-                                onBlur={handleBlur} />
-                            <label class="form-check-label" for="flexCheckIndeterminate">
-                                Yes
+                                    resetForm();
+
+                                    setSubmitting(false);
+                                }, 500);
+
+
+                                // setSubmiting(true);
+
+
+
+                            }}
+                        >
+
+                            {({ values, handleChange, handleSubmit, handleBlur, touched, errors, isSubmitting
+                            }) => (
+
+
+
+                                <Form onSubmit={handleSubmit}>
+                                    <Form.Group className="mb-3" controlId="formName">
+                                        <Form.Label>Name</Form.Label>
+                                        <Form.Control type="text" placeholder="Enter Name"
+                                            name="name"
+                                            onChange={handleChange}
+                                            value={values.name}
+                                            onBlur={handleBlur}
+                                            className={touched.name && errors.name ? "error" : null}
+                                        />
+                                        {touched.name && errors.name ? (
+                                            <div className="error-message">{errors.name}</div>
+                                        ) : null}
+
+                                    </Form.Group>
+                                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                                        <Form.Label>Email address</Form.Label>
+                                        <Form.Control type="email" placeholder="Enter email"
+                                            name="email"
+                                            onChange={handleChange}
+                                            value={values.email}
+                                            onBlur={handleBlur}
+                                            className={touched.email && errors.email ? "error" : null}
+                                        />
+                                        {touched.email && errors.email ? (
+                                            <div className="error-message">{errors.email}</div>
+                                        ) : null}
+                                    </Form.Group>
+
+
+                                    <Form.Group className="mb-3" controlId="formBasicAddress">
+                                        <Form.Label>Address</Form.Label>
+                                        <Form.Control type="text" placeholder="Enter Address"
+                                            name="address"
+                                            onChange={handleChange}
+                                            value={values.address}
+                                            onBlur={handleBlur}
+                                            className={touched.address && errors.address ? "error" : null}
+                                        />
+                                        {touched.address && errors.address ? (
+                                            <div className="error-message">{errors.address}</div>
+                                        ) : null}
+                                    </Form.Group>
+
+
+                                    <div id="checkbox-group">Checked</div>
+                                    <Form.Group className="mb-3" controlId="formBasicCheck">
+                                        <div class="form-check">
+                                            <Field type="checkbox" class="form-check-input" name="checked" value="Yes"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur} />
+                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                Yes
                             </label>
-                        </div>
+                                        </div>
 
-                        <div class="form-check">
-                            <Field type="checkbox" class="form-check-input" name="checked" value="No"
-                                onChange={handleChange}
-                                onBlur={handleBlur} />
-                            <label class="form-check-label" for="flexCheckIndeterminate">
-                                No
+                                        <div class="form-check">
+                                            <Field type="checkbox" class="form-check-input" name="checked" value="No"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur} />
+                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                No
                             </label>
-                        </div>
+                                        </div>
 
-                        <div class="form-check">
-                            <Field type="checkbox" class="form-check-input" name="checked" value="May Be"
-                                onChange={handleChange}
-                                onBlur={handleBlur} />
-                            <label class="form-check-label" for="flexCheckIndeterminate">
-                                May Be
+                                        <div class="form-check">
+                                            <Field type="checkbox" class="form-check-input" name="checked" value="May Be"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur} />
+                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                May Be
                             </label>
-                        </div>
-                        {touched.checked && errors.checked ? (
-                            <div className="error-message">{errors.checked}</div>
-                        ) : null}
-                    </Form.Group>
+                                        </div>
+                                        {touched.checked && errors.checked ? (
+                                            <div className="error-message">{errors.checked}</div>
+                                        ) : null}
+                                    </Form.Group>
 
 
-                    <div id="checkbox-group">Radios</div>
-                    <Form.Group className="mb-3" controlId="formBasicCheck">
-                        <div class="form-check">
-                            <Field type="radio" class="form-check-input" name="radios" value="Blue"
-                                onChange={handleChange}
-                                onBlur={handleBlur} />
-                            <label class="form-check-label" for="flexCheckIndeterminate">
-                                Blue
+                                    <div id="checkbox-group">Radios</div>
+                                    <Form.Group className="mb-3" controlId="formBasicCheck">
+                                        <div class="form-check">
+                                            <Field type="radio" class="form-check-input" name="radios" value="Blue"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur} />
+                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                Blue
                             </label>
 
-                        </div>
+                                        </div>
 
-                        <div class="form-check">
-                            <Field type="radio" class="form-check-input" name="radios" value="Green"
-                                onChange={handleChange}
-                                onBlur={handleBlur} />
-                            <label class="form-check-label" for="flexCheckIndeterminate">
-                                Green
+                                        <div class="form-check">
+                                            <Field type="radio" class="form-check-input" name="radios" value="Green"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur} />
+                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                Green
                             </label>
-                        </div>
+                                        </div>
 
-                        <div class="form-check">
-                            <Field type="radio" class="form-check-input" name="radios" value="Red"
-                                onChange={handleChange}
-                                onBlur={handleBlur} />
-                            <label class="form-check-label" for="flexCheckIndeterminate">
-                                Red
+                                        <div class="form-check">
+                                            <Field type="radio" class="form-check-input" name="radios" value="Red"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur} />
+                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                Red
                             </label>
-                        </div>
-                        {touched.radios && errors.radios ? (
-                            <div className="error-message">{errors.radios}</div>
-                        ) : null}
-                    </Form.Group>
-                    
-                    <>
-                    <Form.Select aria-label="Default select example"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        name="cars"
-                    >
+                                        </div>
+                                        {touched.radios && errors.radios ? (
+                                            <div className="error-message">{errors.radios}</div>
+                                        ) : null}
+                                    </Form.Group>
 
-                        <option>Select the Car Model</option>
-                        <option value="Honda">Honda</option>
-                        <option value="Tesla">Tesla</option>
-                        <option value="Ford">Ford</option>
-                    </Form.Select>
-                    {touched.cars && errors.cars ? (
-                        <div className="error-message">{errors.cars}</div>
-                    ) : null}
-                    </>
+                                    <>
+                                        <Form.Select aria-label="Default select example"
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            name="cars"
+                                        >
 
-                    <Form.Group className="mb-3" controlId="formPhone">
-                        <Form.Label>Phone</Form.Label>
-                        <Form.Control type="number" placeholder="Enter Phone Number"
-                            name="phone"
-                            onChange={handleChange}
-                            value={values.phone}
-                            onBlur={handleBlur}
-                            className={touched.phone && errors.phone ? "error" : null}
-                        />
-                        {touched.phone && errors.phone ? (
-                            <div className="error-message">{errors.phone}</div>
-                        ) : null}
+                                            <option>Select the Car Model</option>
+                                            <option value="Honda">Honda</option>
+                                            <option value="Tesla">Tesla</option>
+                                            <option value="Ford">Ford</option>
+                                        </Form.Select>
+                                        {touched.cars && errors.cars ? (
+                                            <div className="error-message">{errors.cars}</div>
+                                        ) : null}
+                                    </>
 
-                    </Form.Group>
+                                    <Form.Group className="mb-3" controlId="formPhone">
+                                        <Form.Label>Phone</Form.Label>
+                                        <Form.Control type="number" placeholder="Enter Phone Number"
+                                            name="phone"
+                                            onChange={handleChange}
+                                            value={values.phone}
+                                            onBlur={handleBlur}
+                                            className={touched.phone && errors.phone ? "error" : null}
+                                        />
+                                        {touched.phone && errors.phone ? (
+                                            <div className="error-message">{errors.phone}</div>
+                                        ) : null}
 
-                    <Form.Group className="mb-3" controlId="formZip">
-                        <Form.Label>Zip Code</Form.Label>
-                        <Form.Control type="text" placeholder="Enter Zip Code"
-                            name="zip"
-                            onChange={handleChange}
-                            value={values.zip}
-                            onBlur={handleBlur}
-                            className={touched.zip && errors.zip ? "error" : null}
-                        />
-                        {touched.zip && errors.zip ? (
-                            <div className="error-message">{errors.zip}</div>
-                        ) : null}
+                                    </Form.Group>
 
-                    </Form.Group>
+                                    <Form.Group className="mb-3" controlId="formZip">
+                                        <Form.Label>Zip Code</Form.Label>
+                                        <Form.Control type="text" placeholder="Enter Zip Code"
+                                            name="zip"
+                                            onChange={handleChange}
+                                            value={values.zip}
+                                            onBlur={handleBlur}
+                                            className={touched.zip && errors.zip ? "error" : null}
+                                        />
+                                        {touched.zip && errors.zip ? (
+                                            <div className="error-message">{errors.zip}</div>
+                                        ) : null}
+
+                                    </Form.Group>
 
 
 
-                    <Button variant="primary" type="submit" disabled={isSubmitting}>
-                        Submit
+                                    <Button variant="primary" type="submit" disabled={isSubmitting}>
+                                        Submit
                     </Button>
-                </Form>
-            )}
-        </Formik>
-
-
+                                </Form>
+                            )}
+                        </Formik>
+                    </Col>
+                </Row>
+            </Container>
+        </>
     );
 }
 
