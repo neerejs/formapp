@@ -5,11 +5,57 @@ import * as contentfulManagement from 'contentful-management';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
 import './FormikForm.css';
-import { Col, Row, Container } from 'react-bootstrap';
+import { Col, Row, Container, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const FormikForm = () => {
 
+    const [show, setShow] = useState(false);
+    const navigate = useNavigate();
 
+    const [states, setState] = useState([]);
+    
+
+    useEffect(() => {
+        getDevices();
+    })
+
+    const getDevices = async () => {
+        var headers = new Headers();
+        headers.append("X-CSCAPI-KEY", "RzJudWc2V1M4N3hDWlBST3RrMVlQQkdlQkhtc3JRNkp4NEgycWs1eA==");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: headers,
+            redirect: 'follow'
+        };
+
+
+        const fetchResponse = await fetch('https://api.countrystatecity.in/v1/countries', requestOptions);
+        const data = await fetchResponse.json();
+        setState(data)
+
+
+    }
+
+    const getContents = () => {
+
+        const contentsArray = [];
+
+        states.forEach((item, ind) => {
+            contentsArray.push(
+                <>
+                    <option value={item.name}>{item.name}</option>
+                    
+
+                </>
+            )
+            console.log('https://api.countrystatecity.in/v1/countries/'+item.iso2+'/states');
+        })
+        
+        return contentsArray;
+    }
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -48,13 +94,14 @@ const FormikForm = () => {
                             validationSchema={validationSchema}
                             onSubmit={(values, { setSubmitting, resetForm }) => {
                                 console.log(values)
-                                setSubmitting(true)
-
+                                setSubmitting(true);
+                                setShow(true);
 
 
 
                                 setTimeout(() => {
                                     alert(JSON.stringify(values, null, 2));
+
 
                                     const client = contentfulManagement.createClient({
                                         accessToken: 'CFPAT-oUCFauW8e8B0z1etnV5Lx0V0eEegb51Dy4d__550f1k'
@@ -245,10 +292,8 @@ const FormikForm = () => {
                                             name="cars"
                                         >
 
-                                            <option>Select the Car Model</option>
-                                            <option value="Honda">Honda</option>
-                                            <option value="Tesla">Tesla</option>
-                                            <option value="Ford">Ford</option>
+                                            <option>Select Your Country</option>
+                                           {getContents()}
                                         </Form.Select>
                                         {touched.cars && errors.cars ? (
                                             <div className="error-message">{errors.cars}</div>
@@ -286,7 +331,10 @@ const FormikForm = () => {
                                     </Form.Group>
 
 
-
+                                    {show ? <Alert key='success' variant='success' dismissible onClose={() => {
+                                        setShow(false)
+                                        navigate('/')
+                                    }}> Record created successfully  </Alert> : null}
                                     <Button variant="primary" type="submit" disabled={isSubmitting}>
                                         Submit
                     </Button>
