@@ -14,9 +14,15 @@ const FormikForm = () => {
     const [show, setShow] = useState(false);
     const navigate = useNavigate();
 
-    const [states, setState] = useState([]);
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [countryVal, setCountryVal] = useState('');
+    //const [stateVal, setStateVal] = useState('');
+    const [selectedState, setSelectedState] = useState('');
     
-
+   
+    
     useEffect(() => {
         getDevices();
     })
@@ -34,7 +40,7 @@ const FormikForm = () => {
 
         const fetchResponse = await fetch('https://api.countrystatecity.in/v1/countries', requestOptions);
         const data = await fetchResponse.json();
-        setState(data)
+        setCountries(data)
 
 
     }
@@ -43,19 +49,109 @@ const FormikForm = () => {
 
         const contentsArray = [];
 
+        countries.forEach((item, ind) => {
+            contentsArray.push(
+                <>
+                    <option value={item.iso2}>{item.name}</option>
+                </>
+            )
+            // console.log('https://api.countrystatecity.in/v1/countries/'+item.iso2+'/states');
+        })
+
+
+        return contentsArray;
+    }
+
+
+
+    const setContentsState = async (icd) => {
+        setCountryVal(icd);
+        var headers = new Headers();
+        headers.append("X-CSCAPI-KEY", "RzJudWc2V1M4N3hDWlBST3RrMVlQQkdlQkhtc3JRNkp4NEgycWs1eA==");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: headers,
+            redirect: 'follow'
+        };
+
+        if (icd) {
+
+            const fetchResponse = await fetch('https://api.countrystatecity.in/v1/countries/' + icd + '/states', requestOptions);
+            const data = await fetchResponse.json();
+            setStates(data)
+        }
+
+        
+    }
+
+   
+
+    
+    const getContentsState = () => {
+
+        const contentsArray = [];
+
+        contentsArray.push(<option>Select Your State</option>)
+
+
         states.forEach((item, ind) => {
             contentsArray.push(
                 <>
-                    <option value={item.name}>{item.name}</option>
-                    
+                    <option value={item.iso2}>{item.name}</option>
+
 
                 </>
             )
-            console.log('https://api.countrystatecity.in/v1/countries/'+item.iso2+'/states');
+
         })
-        
+
         return contentsArray;
     }
+
+
+
+    const setContentsCity = async (state) => {
+        setSelectedState(state);
+        var headers = new Headers();
+        headers.append("X-CSCAPI-KEY", "RzJudWc2V1M4N3hDWlBST3RrMVlQQkdlQkhtc3JRNkp4NEgycWs1eA==");
+
+        var requestOptions = {
+            method: 'GET',
+            headers: headers,
+            redirect: 'follow'
+        };
+
+        if (selectedState && countryVal) {
+
+            const fetchResponse = await fetch('https://api.countrystatecity.in/v1/countries/' + countryVal+'/states/'+ selectedState + '/cities', requestOptions);
+            const data = await fetchResponse.json();
+            setCities(data)
+        }
+    }
+
+
+    const getContentsCity = () => {
+
+        const contentsArray = [];
+
+        contentsArray.push(<option>Select Your City</option>)
+
+
+        cities.forEach((item, ind) => {
+            contentsArray.push(
+                <>
+                    <option value={item.name}>{item.name}</option>
+
+
+                </>
+            )
+
+        })
+
+        return contentsArray;
+    }
+
 
     const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
@@ -90,17 +186,15 @@ const FormikForm = () => {
             <Container>
                 <Row>
                     <Col>
-                        <Formik initialValues={{ name: "", email: "", address: "", checked: [], radios: '', cars: '', phone: '', zip: '' }}
+                        <Formik initialValues={{ name: "", email: "", address: "", checked: [], radios: '', cars: '', phone: '', zip: '', state: '' }}
                             validationSchema={validationSchema}
                             onSubmit={(values, { setSubmitting, resetForm }) => {
                                 console.log(values)
                                 setSubmitting(true);
                                 setShow(true);
-
-
-
                                 setTimeout(() => {
                                     alert(JSON.stringify(values, null, 2));
+                                    alert(values.cars)
 
 
                                     const client = contentfulManagement.createClient({
@@ -225,7 +319,7 @@ const FormikForm = () => {
                                                 onBlur={handleBlur} />
                                             <label class="form-check-label" for="flexCheckIndeterminate">
                                                 Yes
-                            </label>
+                                            </label>
                                         </div>
 
                                         <div class="form-check">
@@ -234,7 +328,7 @@ const FormikForm = () => {
                                                 onBlur={handleBlur} />
                                             <label class="form-check-label" for="flexCheckIndeterminate">
                                                 No
-                            </label>
+                                            </label>
                                         </div>
 
                                         <div class="form-check">
@@ -243,7 +337,7 @@ const FormikForm = () => {
                                                 onBlur={handleBlur} />
                                             <label class="form-check-label" for="flexCheckIndeterminate">
                                                 May Be
-                            </label>
+                                            </label>
                                         </div>
                                         {touched.checked && errors.checked ? (
                                             <div className="error-message">{errors.checked}</div>
@@ -259,7 +353,7 @@ const FormikForm = () => {
                                                 onBlur={handleBlur} />
                                             <label class="form-check-label" for="flexCheckIndeterminate">
                                                 Blue
-                            </label>
+                                            </label>
 
                                         </div>
 
@@ -269,7 +363,7 @@ const FormikForm = () => {
                                                 onBlur={handleBlur} />
                                             <label class="form-check-label" for="flexCheckIndeterminate">
                                                 Green
-                            </label>
+                                            </label>
                                         </div>
 
                                         <div class="form-check">
@@ -278,27 +372,83 @@ const FormikForm = () => {
                                                 onBlur={handleBlur} />
                                             <label class="form-check-label" for="flexCheckIndeterminate">
                                                 Red
-                            </label>
+                                            </label>
                                         </div>
                                         {touched.radios && errors.radios ? (
                                             <div className="error-message">{errors.radios}</div>
                                         ) : null}
                                     </Form.Group>
 
-                                    <>
-                                        <Form.Select aria-label="Default select example"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            name="cars"
-                                        >
 
-                                            <option>Select Your Country</option>
-                                           {getContents()}
-                                        </Form.Select>
-                                        {touched.cars && errors.cars ? (
-                                            <div className="error-message">{errors.cars}</div>
-                                        ) : null}
-                                    </>
+                                    <Form.Select aria-label="Default select example"
+                                        // onChange={handleChange}
+
+                                        onChange={e => {
+                                            // call the built-in handleBur
+                                            handleChange(e)
+                                            // and do something about e
+                                            
+                                            // setCountryCode(e.currentTarget.value)
+
+                                            setContentsState(e.currentTarget.value);
+
+
+                                            // alert (someValue)
+
+
+                                        }}
+
+                                        onBlur={handleBlur}
+                                        name="cars"
+                                    >
+                                        <option>Select Your Country</option>
+                                        {getContents()}
+                                    </Form.Select>
+                                    {touched.cars && errors.cars ? (
+                                        <div className="error-message">{errors.cars}</div>
+                                    ) : null}
+
+
+
+
+                                    <Form.Select aria-label="Default select state"
+                                        onChange={e => {
+                                            // call the built-in handleBur
+                                            handleChange(e)
+                                            // and do something about e
+                                            
+                                            // setCountryCode(e.currentTarget.value)
+                                            setContentsCity(e.currentTarget.value);
+
+
+                                            // alert (someValue)
+                                        }}
+                                        onBlur={handleBlur}
+                                        name="state"
+                                    >
+
+                                        {getContentsState()}
+                                    </Form.Select>
+                                    {touched.state && errors.state ? (
+                                        <div className="error-message">{errors.state}</div>
+                                    ) : null}
+
+                                    {/* city==================================================== */}
+
+                                    <Form.Select aria-label="Default select city"
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        name="city"
+                                    >
+
+                                        {getContentsCity()}
+                                    </Form.Select>
+                                    {touched.state && errors.state ? (
+                                        <div className="error-message">{errors.state}</div>
+                                    ) : null}
+
+
+                                    {/* city==================================================== */}
 
                                     <Form.Group className="mb-3" controlId="formPhone">
                                         <Form.Label>Phone</Form.Label>
