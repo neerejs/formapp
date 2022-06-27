@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import TopNav from './TopNav';
 import FormikForm from './FormikForm';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import States from './States.js'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +15,7 @@ root.render(
       <TopNav />
       <Routes>
       <Route path="/" element={<FormikForm />}></Route>
+      <Route path="/states" element={<States />}></Route>
       </Routes>
   </BrowserRouter>
   </>

@@ -31,6 +31,9 @@ const TopNav = () => {
                                 <LinkContainer to="/">
                                     <Nav.Link >Home</Nav.Link>
                                 </LinkContainer>
+                                <LinkContainer to="/states">
+                                    <Nav.Link >Country</Nav.Link>
+                                </LinkContainer>
                                 
                             </Nav>
                         </Navbar.Collapse>
